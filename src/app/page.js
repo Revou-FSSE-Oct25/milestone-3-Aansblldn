@@ -5,16 +5,12 @@ export const metadata = {
   description: 'Jual beli online murah'
 }
 
-export const dynamic = 'force-dynamic'
-
 async function ambilProduk() {
   try {
-    const res = await fetch('https://fakestoreapi.com/products')
-    
-    const contentType = res.headers.get('content-type')
-    if (!contentType || !contentType.includes('application/json')) {
-      return []
-    }
+    const res = await fetch('https://fakestoreapi.com/products', {
+      next: { revalidate: 3600 } 
+      
+    })
     
     if (!res.ok) {
       return []
@@ -22,7 +18,7 @@ async function ambilProduk() {
     
     return res.json()
   } catch (error) {
-    console.error('Error fetch:', error)
+    console.error('Error:', error)
     return []
   }
 }
