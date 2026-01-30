@@ -1,45 +1,53 @@
+'use client'
+
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
-export const metadata = {
-  title: 'RevoShop - Toko Online',
-  description: 'Jual beli online murah'
-}
+export default function HomePage() {
+  const [produk, setProduk] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-async function ambilProduk() {
-  try {
-    const res = await fetch('https://fakestoreapi.com/products', {
-      next: { revalidate: 3600 } 
-      
-    })
-    
-    if (!res.ok) {
-      return []
-    }
-    
-    return res.json()
-  } catch (error) {
-    console.error('Error:', error)
-    return []
-  }
-}
+  useEffect(() => {
+    fetch('https://fakestoreapi.com/products')
+      .then(res => res.json())
+      .then(data => {
+        setProduk(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setError(true)
+        setLoading(false)
+      })
+  }, [])
 
-export default async function HomePage() {
-  const produk = await ambilProduk()
-  
-  if (!produk || produk.length === 0) {
+  if (loading) {
     return (
       <main className="container mx-auto p-4 bg-gray-50 min-h-screen">
-        <h1 className="text-5xl font-bold text-left mb-8 text-green-800">
-          🛒RevoShop
-        </h1>
+        <h1 className="text-5xl font-bold text-left mb-8 text-green-800">🛒RevoShop</h1>
+        <p className="text-center py-20">Loading...</p>
+      </main>
+    )
+  }
+
+  if (error || produk.length === 0) {
+    return (
+      <main className="container mx-auto p-4 bg-gray-50 min-h-screen">
+        <h1 className="text-5xl font-bold text-left mb-8 text-green-800">🛒RevoShop</h1>
         <div className="text-center py-20">
-          <p className="text-gray-600 text-lg">Gagal memuat produk.</p>
-          <p className="text-sm text-gray-400 mt-2">Silakan refresh halaman</p>
+          <p className="text-gray-600">Gagal memuat produk.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Refresh
+          </button>
         </div>
       </main>
     )
   }
-  
+
   return (
     <main className="container mx-auto p-4 bg-gray-50 min-h-screen">
       <h1 className="text-5xl font-bold text-left mb-8 text-green-800 hover:text-blue-600">
