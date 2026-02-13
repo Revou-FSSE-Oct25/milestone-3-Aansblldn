@@ -2,6 +2,8 @@
 
 E-commerce store built with Next.js, TypeScript, Tailwind CSS, and Zustand.
 
+[Live Demo](https://milestone-3-revoshop-ten.vercel.app/)
+
 ## Features
 
 - ✅ Authentication & Middleware
